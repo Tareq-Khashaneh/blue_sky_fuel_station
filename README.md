@@ -1,16 +1,5 @@
 # blue_sky_station
 
-A new Flutter project.
-
-## Getting Started
-
-This project is a starting point for a Flutter application.
-
-A few resources to get you started if this is your first Flutter project:
-
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
-
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+This application manages fuel filling based on the customer's fuel quota, which is obtained by scanning their smart card (Mifare card) with the POS device. After the scan, the customer can fill their vehicle with the specified amount of fuel they requested.
+## images link
+https://t.me/c/2019030606/20
