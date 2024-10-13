@@ -22,6 +22,7 @@ class HomeController extends GetxController {
   late EnumStatus cardReadStatus;
   UserModel? currentUser;
   late bool isLoading;
+  late bool isServerLoading;
   late CardQuotPro _cardQuotPro;
   CardQuotaModel? cardQuota;
   Map<String, int> status = {};
@@ -29,19 +30,20 @@ class HomeController extends GetxController {
   bool isNozzleLift = false;
   bool isRunning = true;
   bool isRouterConnected = false;
-  late bool isPrevPayment;
   Timer? _pumpTimer;
   @override
   void onInit() async {
     cardId = '';
     isPumpOff = false;
     isLoading = false;
-    isPrevPayment = false;
+    isServerLoading = false;
     currentUser = _authController.currentUser;
     cardReadStatus = EnumStatus.initialize;
     _cardQuotPro = CardQuotPro(
         cardQuotaRepo: CardQuotaRepo(apiService: appService.apiService));
-    startPumpConnectionCheck();
+    if(appService.pumpState){
+      startPumpConnectionCheck();
+    }
     super.onInit();
   }
 
@@ -124,6 +126,8 @@ class HomeController extends GetxController {
 
 
   Future<bool> getCardQuota() async {
+    isServerLoading = true ;
+    update();
     parameters params = {
       'user_id': _authController.currentUser!.id,
       'card_sn': cardId,
@@ -132,13 +136,12 @@ class HomeController extends GetxController {
     params.addAll(appService.params);
     try {
       cardQuota = await _cardQuotPro.getCardQuota(params);
-      if (cardQuota != null) {
-        return true;
-      }
     } catch (e) {
       print("error in getQardQuota ");
-      return false;
     }
-    return false;
+    isServerLoading = false;
+    update();
+   return cardQuota != null ? true : false;
+
   }
 }

@@ -16,7 +16,7 @@ import '../../presentation/screen/settings_screen.dart';
 
 abstract class AppRoutes {
   static String homeScreenRoute = '/home';
-  static String filingScreenRoute = '/filing';
+  static String FillingScreenRoute = '/filing';
   static String loginScreenRoute = '/login';
   static String loginAdminRoute = '/login-admin';
   static const String settingsRoute = '/settings';
@@ -29,9 +29,9 @@ abstract class AppRoutes {
       page: () => LoginScreen(),
       binding: AuthBindings(),
     ),
-    GetPage(name: filingScreenRoute, page: () => FilingScreen(), bindings: [
+    GetPage(name: FillingScreenRoute, page: () => FillingScreen(), bindings: [
       BlueSkyBindings(),
-      FilingBindings(),
+      FillingBindings(),
     ]),
     GetPage(
         name: homeScreenRoute,

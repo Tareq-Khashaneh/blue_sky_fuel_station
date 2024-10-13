@@ -1,7 +1,5 @@
-import 'package:blue_sky_station/presentation/screen/connection_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get_navigation/src/root/get_material_app.dart';
-import 'package:intl/intl.dart';
 import 'core/constants/app_colors.dart';
 import 'core/constants/routes.dart';
 import 'logic/getx_service/app_service.dart';

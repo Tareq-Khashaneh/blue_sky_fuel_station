@@ -195,9 +195,7 @@ public class MainActivity extends FlutterActivity {
                 public void onSwipeIncorrect() {
                     runOnUiThread(new Runnable() {
                         @Override
-                        public void run() {
-//                        Toast.makeText(MainActivity.this, getString(R.string.swip_again), Toast.LENGTH_SHORT).show();
-                        }
+                        public void run() {}
                     });
                 }
                 @Override
@@ -205,9 +203,7 @@ public class MainActivity extends FlutterActivity {
                     cardReader.stopSearch();
                     runOnUiThread(new Runnable() {
                         @Override
-                        public void run() {
-//                        Toast.makeText(MainActivity.this, getString(R.string.search_toomany_cards), Toast.LENGTH_SHORT).show();
-                        }
+                        public void run() {}
                     });
                 }
             });

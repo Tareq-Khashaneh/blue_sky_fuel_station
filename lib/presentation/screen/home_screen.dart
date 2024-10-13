@@ -1,4 +1,5 @@
 import 'package:blue_sky_station/core/constants/errors.dart';
+import 'package:blue_sky_station/presentation/widgets/circular_loading.dart';
 import 'package:blue_sky_station/presentation/widgets/custom_card.dart';
 import 'package:blue_sky_station/presentation/widgets/error_message_card.dart';
 import 'package:flutter/material.dart';
@@ -24,12 +25,11 @@ class HomeScreen extends GetView<HomeController> {
             GetBuilder<HomeController>(builder: (_) {
               if (
                   !_.isPumpOff
-              //&&
-                  //!controller.isPrevPayment &&
-              //        controller.appService.isServerConnected
               ) {
-                if (_.status['control'] == 1 && !_.isNozzleLift) {
-                return Row(
+                if (_.status['control'] == 1 && !_.isNozzleLift || !_.appService.pumpState) {
+                return _.isServerLoading ?
+                const SizedBox():
+                Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     BottomNavBarContainer(
@@ -42,16 +42,14 @@ class HomeScreen extends GetView<HomeController> {
                         onTap: !controller.isLoading
                             ? () async {
                                 if (await controller.readCard()) {
-                                  if (!controller.isPrevPayment) {
                                     if (await controller.getCardQuota()) {
                                       controller.isRunning = false;
-                                        Get.offNamed(AppRoutes.filingScreenRoute,
+                                        Get.offNamed(AppRoutes.FillingScreenRoute,
                                             arguments: {
                                               'cardQuota': controller.cardQuota,
                                               'cardId': controller.cardId
                                             });
                                        }
-                                  }
                                 }
                               }
                             : null),
@@ -103,109 +101,194 @@ class HomeScreen extends GetView<HomeController> {
                 padding:
                     const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
                 child: GetBuilder<HomeController>(builder: (controller) {
-                  // if (controller.appService.isServerConnected) {
-                    if (!controller.isPumpOff) {
-                      return controller.status['control'] == 0
-                          ? const ErrorMessageCard(
-                              message: "لايوجد تحكم بالمضخة")
-                          : controller.isNozzleLift
-                              ? const ErrorMessageCard(
-                                  message: "يرجى مسح البطاقة قبل رفع الفرد")
-                              : Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Card(
-                                      elevation: 4,
-                                      color: AppColors.kMainColorGreen
-                                          .withOpacity(0.9),
-                                      child: Container(
-                                        width: double.infinity,
-                                        padding: const EdgeInsets.symmetric(
-                                            vertical: 8),
-                                        child: ListTile(
-                                          leading: Icon(
-                                            Icons.local_gas_station,
-                                            color: AppColors.kWhiteColor,
-                                            size:
-                                                Dimensions.screenHeight * 0.08,
-                                          ),
-                                          title: Text(
-                                              controller.currentUser?.name ??
-                                                  '',
-                                              style: Theme.of(context)
-                                                  .textTheme
-                                                  .bodyMedium!
-                                                  .copyWith(
-                                                      color:
-                                                          AppColors.kWhiteColor,
-                                                      fontWeight:
-                                                          FontWeight.bold)),
-                                          trailing: const Icon(
-                                            Icons.check_circle,
-                                            color: Colors.white,
-                                          ),
-                                        ),
-                                      ),
-                                    ),
-                                    SizedBox(
-                                      height: Get.size.height * 0.03,
-                                    ),
-                                    GetBuilder<HomeController>(builder: (_) {
-                                      return _.cardReadStatus ==
-                                              EnumStatus.loading
-                                          ? Padding(
-                                              padding: const EdgeInsets.only(
-                                                  top: 50.0),
-                                              child: Center(
-                                                child: Lottie.asset(
-                                                    'assets/images/card_scan.json',
-                                                    width: 500,
-                                                    fit: BoxFit.cover),
-                                              ),
-                                            )
-                                          : const SizedBox();
-                                      // : const Column(
-                                      //     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                                      //     crossAxisAlignment: CrossAxisAlignment.start,
-                                      //     children: [
-                                      //       TitleWidget(
-                                      //         title: 'الجلسات السابقة',
-                                      //         fontSize: 30,
-                                      //       ),
-                                      //       SizedBox(
-                                      //         height: 12,
-                                      //       ),
-                                      // SizedBox(
-                                      //   height: 275,
-                                      //   child: ListView.builder(
-                                      //       itemCount: controller.sessions.length,
-                                      //       itemBuilder: (context, index) {
-                                      //         return SessionCard(
-                                      //             sessionInfo: controller
-                                      //                 .sessions[index].sessionInfo,
-                                      //             onTap: () {
-                                      //               controller.sessionController
-                                      //                   .getSession(int.parse(controller
-                                      //                   .sessions[index].sessionId));
-                                      //               Get.toNamed(AppRoutes.sessionRoute);
-                                      //             });
-                                      //       }),
-                                      // ),
-                                      //   ],
-                                      // );
-                                    })
-                                  ],
-                                );
-                    } else  {
-                      return const ErrorMessageCard(
-                          message: "المضخة خارج الخدمة");
+                  if(!controller.isServerLoading){
+                    if(controller.appService.pumpState){
+                      if (!controller.isPumpOff) {
+                        return controller.status['control'] == 0
+                            ? const ErrorMessageCard(
+                            message: "لايوجد تحكم بالمضخة")
+                            : controller.isNozzleLift
+                            ? const ErrorMessageCard(
+                            message: "يرجى مسح البطاقة قبل رفع الفرد")
+                            : Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Card(
+                              elevation: 4,
+                              color: AppColors.kMainColorGreen
+                                  .withOpacity(0.9),
+                              child: Container(
+                                width: double.infinity,
+                                padding: const EdgeInsets.symmetric(
+                                    vertical: 8),
+                                child: ListTile(
+                                  leading: Icon(
+                                    Icons.local_gas_station,
+                                    color: AppColors.kWhiteColor,
+                                    size:
+                                    Dimensions.screenHeight * 0.08,
+                                  ),
+                                  title: Text(
+                                      controller.currentUser?.name ??
+                                          '',
+                                      style: Theme.of(context)
+                                          .textTheme
+                                          .bodyMedium!
+                                          .copyWith(
+                                          color:
+                                          AppColors.kWhiteColor,
+                                          fontWeight:
+                                          FontWeight.bold)),
+                                  trailing: const Icon(
+                                    Icons.check_circle,
+                                    color: Colors.white,
+                                  ),
+                                ),
+                              ),
+                            ),
+                            SizedBox(
+                              height: Get.size.height * 0.03,
+                            ),
+                            GetBuilder<HomeController>(builder: (_) {
+                              return _.cardReadStatus ==
+                                  EnumStatus.loading
+                                  ? Padding(
+                                padding: const EdgeInsets.only(
+                                    top: 50.0),
+                                child: Center(
+                                  child: Lottie.asset(
+                                      'assets/images/card_scan.json',
+                                      width: 500,
+                                      fit: BoxFit.cover),
+                                ),
+                              )
+                                  : const SizedBox();
+                              // : const Column(
+                              //     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                              //     crossAxisAlignment: CrossAxisAlignment.start,
+                              //     children: [
+                              //       TitleWidget(
+                              //         title: 'الجلسات السابقة',
+                              //         fontSize: 30,
+                              //       ),
+                              //       SizedBox(
+                              //         height: 12,
+                              //       ),
+                              // SizedBox(
+                              //   height: 275,
+                              //   child: ListView.builder(
+                              //       itemCount: controller.sessions.length,
+                              //       itemBuilder: (context, index) {
+                              //         return SessionCard(
+                              //             sessionInfo: controller
+                              //                 .sessions[index].sessionInfo,
+                              //             onTap: () {
+                              //               controller.sessionController
+                              //                   .getSession(int.parse(controller
+                              //                   .sessions[index].sessionId));
+                              //               Get.toNamed(AppRoutes.sessionRoute);
+                              //             });
+                              //       }),
+                              // ),
+                              //   ],
+                              // );
+                            })
+                          ],
+                        );
+                      } else  {
+                        return const ErrorMessageCard(
+                            message: "المضخة خارج الخدمة");
+                      }
+                    }else{
+                      return Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Card(
+                            elevation: 4,
+                            color: AppColors.kMainColorGreen
+                                .withOpacity(0.9),
+                            child: Container(
+                              width: double.infinity,
+                              padding: const EdgeInsets.symmetric(
+                                  vertical: 8),
+                              child: ListTile(
+                                leading: Icon(
+                                  Icons.local_gas_station,
+                                  color: AppColors.kWhiteColor,
+                                  size:
+                                  Dimensions.screenHeight * 0.08,
+                                ),
+                                title: Text(
+                                    controller.currentUser?.name ??
+                                        '',
+                                    style: Theme.of(context)
+                                        .textTheme
+                                        .bodyMedium!
+                                        .copyWith(
+                                        color:
+                                        AppColors.kWhiteColor,
+                                        fontWeight:
+                                        FontWeight.bold)),
+                                trailing: const Icon(
+                                  Icons.check_circle,
+                                  color: Colors.white,
+                                ),
+                              ),
+                            ),
+                          ),
+                          SizedBox(
+                            height: Get.size.height * 0.03,
+                          ),
+                          GetBuilder<HomeController>(builder: (_) {
+                            return _.cardReadStatus ==
+                                EnumStatus.loading
+                                ? Padding(
+                              padding: const EdgeInsets.only(
+                                  top: 50.0),
+                              child: Center(
+                                child: Lottie.asset(
+                                    'assets/images/card_scan.json',
+                                    width: 500,
+                                    fit: BoxFit.cover),
+                              ),
+                            )
+                                : const SizedBox();
+                            // : const Column(
+                            //     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                            //     crossAxisAlignment: CrossAxisAlignment.start,
+                            //     children: [
+                            //       TitleWidget(
+                            //         title: 'الجلسات السابقة',
+                            //         fontSize: 30,
+                            //       ),
+                            //       SizedBox(
+                            //         height: 12,
+                            //       ),
+                            // SizedBox(
+                            //   height: 275,
+                            //   child: ListView.builder(
+                            //       itemCount: controller.sessions.length,
+                            //       itemBuilder: (context, index) {
+                            //         return SessionCard(
+                            //             sessionInfo: controller
+                            //                 .sessions[index].sessionInfo,
+                            //             onTap: () {
+                            //               controller.sessionController
+                            //                   .getSession(int.parse(controller
+                            //                   .sessions[index].sessionId));
+                            //               Get.toNamed(AppRoutes.sessionRoute);
+                            //             });
+                            //       }),
+                            // ),
+                            //   ],
+                            // );
+                          })
+                        ],
+                      );
                     }
-                  return  const SizedBox();
-                  // }
-                  // else {
-                  //   return const ErrorMessageCard(
-                  //       message: 'لايوجد اتصال مع المخدم');
-                  // }
+                  }else{
+                    return const CircularLoading();
+                  }
                 }))));
   }
 }

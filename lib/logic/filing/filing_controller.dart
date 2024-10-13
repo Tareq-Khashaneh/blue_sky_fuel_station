@@ -15,13 +15,14 @@ import '../../data/repositories/proffer_sale_repo.dart';
 import '../auth/auth_controller.dart';
 import '../getx_service/app_service.dart';
 
-class FilingController extends GetxController {
+class FillingController extends GetxController {
   final AppService appService = Get.find();
   final AuthController _authController = Get.find();
   final BlueSkyController blueSkyController = Get.find();
   CardQuotaModel? cardQuota;
   String orderLiters = '';
   ProfferSaleModel? profferSale;
+  int counterPayment = 1;
   late int printStatus;
   late int randomInt;
   late EnumStatus filingStatus;
@@ -59,6 +60,7 @@ class FilingController extends GetxController {
     sales = 0.0;
     liters = 0.0;
     onGoingFiling = 0;
+    appService.isServerConnected = true;
     if (appService.pumpState) {
       if (cardQuota != null) {
         if (cardQuota!.maxQuantity > 0) {
@@ -264,6 +266,8 @@ class FilingController extends GetxController {
   }
 
   Future<bool> payment({required double orderLiters}) async {
+    isLoading = true;
+    update();
     DateTime now = DateTime.now();
     String localSerial = DateFormat('yyyyMMddHHmmss').format(now);
     appService.storage.write('localSerial', localSerial);
@@ -280,15 +284,50 @@ class FilingController extends GetxController {
       params.addAll(appService.params);
       profferSale = await _profferSalePro.profferSale(params);
       if (profferSale != null) {
-        Alerts.showSnackBar("تم خصم $liters من الرصيد ");
-        print("Payment");
-        return true;
+        Alerts.showSnackBar("تم خصم $orderLiters من الرصيد ");
+        appService.isServerConnected = true;
       }
     } catch (e) {
       print("error in _payment ${e.toString()}");
-      return false;
+      appService.isServerConnected = false;
     }
-    return false;
+    if(profferSale == null){
+      appService.isServerConnected = false;
+    }
+    isLoading = false;
+    update();
+    return profferSale != null ? true : false;
+  }
+  Future<bool> paymentIFFail({required double orderLiters}) async {
+    isLoading = true;
+    update();
+    String localSerial =  appService.storage.read('localSerial');
+    try {
+      parameters params = {
+        'card_sn': cardId,
+        'product_id': _authController.currentProduct!.id,
+        'quantity': orderLiters,
+        'plate_number': '12345',
+        'city_id': '1',
+        'counter': ++counterPayment,
+        'local_serial': localSerial,
+      };
+      params.addAll(appService.params);
+      profferSale = await _profferSalePro.profferSale(params);
+      if (profferSale != null) {
+        Alerts.showSnackBar("تم خصم $orderLiters من الرصيد ");
+        appService.isServerConnected = true;
+      }
+    } catch (e) {
+      print("error in _payment ${e.toString()}");
+      appService.isServerConnected = false;
+    }
+    if(profferSale == null){
+      appService.isServerConnected = false;
+    }
+    isLoading = false;
+    update();
+    return profferSale != null ? true : false;
   }
 
   Future<void> printInvoice(
