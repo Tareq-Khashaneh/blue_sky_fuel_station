@@ -97,9 +97,6 @@ public class MainActivity extends FlutterActivity {
                             String deviceSn = readDeviceInfo();
                             result.success(deviceSn);
                             break;
-//                        case "setMainData":
-//                            setDefaultSettings();
-//                            break;
                         case "setDateTime":
                             String dateTime = call.arguments();
                             if(dateTime != null)
@@ -156,10 +153,13 @@ public class MainActivity extends FlutterActivity {
     }
     private void readCard(ReadCallback callback) {
         Thread readThread = new Thread(()-> {
+
+            System.out.println("1");
             cardReader.searchCard(slotTypes, 50, new OnCardInfoListener() {
                 @Override
                 public void onCardInfo(int retCode, CardInfoEntity cardInfo) {
                     try {
+                        System.out.println("2");
                         uid = "";
                         isTimeOut =false;
                         if (retCode == SdkResult.Success) {
@@ -172,7 +172,7 @@ public class MainActivity extends FlutterActivity {
                                     dataMap.put("cardId", uid);
                                     dataMap.put("isTimeOut", isTimeOut);
                                     callback.onCreditRead(dataMap);
-//                                  beeper.beep((short) -10, (short) 2);
+                                    beeper.beep((short)500, (short)100);
                                 }
                             }
                         } else if (retCode == SdkResult.Fail) {

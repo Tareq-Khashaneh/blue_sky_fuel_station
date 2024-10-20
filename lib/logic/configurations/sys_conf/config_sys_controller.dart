@@ -2,7 +2,6 @@
 
 
 import 'package:get/get.dart';
-
 import '../../getx_service/app_service.dart';
 
 class ConfigSysController extends GetxController{

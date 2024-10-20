@@ -1,15 +1,12 @@
 import 'dart:async';
 import 'dart:typed_data';
-
 import 'package:blue_sky_station/helpers/blue_sky_helper.dart';
 import 'package:get/get.dart';
-
 import '../socket_managing/socket_managing_controller.dart';
-import 'package:xor_dart/xor_dart.dart';
+
 
 class BlueSkyController extends GetxController {
   final SocketManagingController controller = Get.find();
-  late Map<String, double>? fuelingData;
 
   //BlueSky
   Future<Map<String, int>> readDispenserStatus() async {
@@ -17,12 +14,10 @@ class BlueSkyController extends GetxController {
      int content;
      Map<String, int> status = {};
      msg[4] = BlueSkyHelper.calculateCheckByte(message: msg);
-     print("message $msg");
      await controller.sendRequest(msg);
      StreamSubscription
       subscription = controller.getResponseStream().listen(
              (response) {
-           print("response $response");
            if (response[0] != 0XF5) {
              print("Frame response error");
              status = {};
@@ -44,34 +39,33 @@ class BlueSkyController extends GetxController {
              int bit0 = (content >> 1) & 1;
              if (bit0 == 0) {
                print("NO ERROR");
-               status!['error'] = 0;
+               status['error'] = 0;
              } else if (bit0 == 1) {
                print("ERROR");
-               status!['error'] = 1;
+               status['error'] = 1;
              }
              int bit1 = (content >> 3) & 1;
              if (bit1 == 0) {
                print("NOT Controlled");
-               status!['control'] = 0;
+               status['control'] = 0;
              } else if (bit1 == 1) {
                print("Controlled");
-               status!['control'] = 1;
+               status['control'] = 1;
              }
              int bit5 = (content >> 5) & 1;
              if (bit5 == 0) {
-               // print("NO FUELING");
-               status!['fueling'] = 0;
+
+               status['fueling'] = 0;
              } else if (bit5 == 1) {
-               // print("FUELING");
-               status!['fueling'] = 1;
+               status['fueling'] = 1;
              }
              int bit7 = (content >> 7) & 1;
              if (bit7 == 0) {
-               // print("NOZZLE UP");
-               status!['nozzle'] = 1;
+
+               status['nozzle'] = 1;
              } else if (bit7 == 1) {
-               // print("NOZZLE DOWN");
-               status!['nozzle'] = 0;
+
+               status['nozzle'] = 0;
              }
            } else {
              status = {};
@@ -128,7 +122,7 @@ class BlueSkyController extends GetxController {
           byte1 = (byte1 * 100) + ((content >> 4) & 15) * 10 + (content & 15);
           double volume = byte1 / 100;
           print("volume $volume");
-          data!['volume'] = volume;
+          data['volume'] = volume;
           byte1 = 0;
           content = response[7];
           byte1 = (byte1 * 100) + ((content >> 4) & 15) * 10 + (content & 15);
@@ -140,7 +134,7 @@ class BlueSkyController extends GetxController {
           byte1 = (byte1 * 100) + ((content >> 4) & 15) * 10 + (content & 15);
           double price = byte1 / 10;
           print("price $price");
-          data!['price'] = price;
+          data['price'] = price;
         } else {
           print("Error in checkByte");
           data = {};
@@ -173,19 +167,13 @@ class BlueSkyController extends GetxController {
         print("resposnse in blueSky $response");
         if (response[0] != 0XF5) {
           print("Frame response error");
-          // result = null;
-          // return;
         }
         if (response[1] != 0x01) {
           print("hosepie number error");
-          // result = null;
-          // return;
         }
 
         if (response[2] != 0XA3) {
           print("response length error");
-          // result = null;
-          // return;
         }
 
         if (BlueSkyHelper.xorCheckByte(response: response)) {
@@ -462,19 +450,13 @@ class BlueSkyController extends GetxController {
       print("resposnse in blueSky $response");
       if (response[0] != 0XF5) {
         print("Frame response error");
-        // result = null;
-        // return;
       }
       if (response[1] != 0x01) {
         print("hosepie number error");
-        // result = null;
-        // return;
       }
 
       if (response[2] != 0XA5) {
         print("response length error");
-        // result = null;
-        // return;
       }
       if (BlueSkyHelper.xorCheckByte(response: response)) {
         Uint8List contentResponse = response.sublist(3, 6);
@@ -489,29 +471,4 @@ class BlueSkyController extends GetxController {
     await Future.delayed(const Duration(milliseconds: 500));
     subscription.cancel();
   }
-
-  // Future<void> checkConnectionToPump() async {
-  //   // isRunning = true;
-  //   while (true) {
-  //     await Future.delayed(const Duration(seconds: 1));
-  //     Map<String,int> status = await readDispenserStatus();
-  //     print("Status in home controller $status");
-  //     if (status.isEmpty) {
-  //       print("status isEmpty home controller");
-  //     } else {
-  //       if (status!['control'] == 0) {
-  //         await askForControl();
-  //       } else if (status!['control'] == 1) {
-  //         // isPumpControlled = true;
-  //         print("pump is Control");
-  //       } if (status['nozzle'] == 1){
-  //         isNozzleLift = true;
-  //       }else if(status['nozzle'] == 0){
-  //         isNozzleLift = false;
-  //       }
-  //     }
-  //     update();
-  //   }
-  //   print("closed isRunning in home controller $isRunning");
-  // }
 }

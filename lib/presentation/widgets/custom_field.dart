@@ -1,18 +1,16 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter/widgets.dart';
 import '../../core/constants/app_colors.dart';
 import '../../core/constants/dimensions.dart';
 
 class CustomField extends StatefulWidget {
-   CustomField({super.key, required this.label, required this.prefixIcon, this.onChange,  this.validator, this.isSecure,  this.keyboardType,this.inputFormatters,this.controller, this.labelColor, this.filledColor, this.iconColor,this.errorColor = AppColors.kWhiteColor});
+   CustomField({super.key, required this.label, required this.prefixIcon, this.onChange,  this.validator, this.isSecure = false,  this.keyboardType,this.inputFormatters,this.controller, this.labelColor, this.filledColor, this.iconColor,this.errorColor = AppColors.kWhiteColor});
   final String label;
   final IconData prefixIcon;
   final Function(String)? onChange;
   TextInputType? keyboardType;
   TextEditingController? controller;
-  late bool? isSecure;
+  final  bool isSecure;
    final List<TextInputFormatter>? inputFormatters;
   final String? Function(String?)? validator;
   final Color? labelColor;
@@ -40,6 +38,7 @@ class _CustomFieldState extends State<CustomField> {
         TextFormField(
           controller: widget.controller,
           keyboardType: widget.keyboardType,
+          obscureText: widget.isSecure,
           decoration: InputDecoration(
             filled: true,
             fillColor: widget.filledColor ?? AppColors.kWhiteColor.withOpacity(0.5),

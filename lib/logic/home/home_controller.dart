@@ -1,7 +1,5 @@
 import 'dart:async';
-
 import 'package:blue_sky_station/logic/blue_sky/blue_sky_controller.dart';
-import 'package:blue_sky_station/logic/connectivity/connectivity%20_controller.dart';
 import 'package:get/get.dart';
 import '../../core/constants/errors.dart';
 import '../../core/constants/typedef.dart';
@@ -28,7 +26,6 @@ class HomeController extends GetxController {
   Map<String, int> status = {};
   late bool isPumpOff;
   bool isNozzleLift = false;
-  bool isRunning = true;
   bool isRouterConnected = false;
   Timer? _pumpTimer;
   @override

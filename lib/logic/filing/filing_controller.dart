@@ -113,7 +113,9 @@ class FillingController extends GetxController {
     }
     super.onInit();
   }
+void check(){
 
+}
   @override
   void onReady() {
     super.onReady();
@@ -169,17 +171,13 @@ class FillingController extends GetxController {
     bool isNozzleUpAndDown = false;
     double volumeLimit = 2.0;
     if (await blueSkyController.askForControl()) {
-      print("blueSkyController.askForControl()");
       if (await blueSkyController.writePresetVolume(volume: volumeLimit)) {
-        print("blueSkyController.writePresetVolume(volume: 2.0)");
         if (await blueSkyController.powerOn()) {
-          print("await blueSkyController.powerOn())");
           while (true) {
             await Future.delayed(const Duration(seconds: 1));
             status = await blueSkyController.readDispenserStatus();
             print("status $status");
             if (status.isEmpty) {
-              print("status isEmpty");
               isRouterConnected = false;
             } else if (status.isNotEmpty) {
               isRouterConnected = true;
@@ -190,7 +188,6 @@ class FillingController extends GetxController {
                 isNozzleLift = true;
                 fuelingData = await blueSkyController.readFuelingData();
                 if (fuelingData.isNotEmpty) {
-                  print("fuelingData.isNotEmpty");
                   if (liters == fuelingData['volume']) {
                     nozzleUpCounterUnderLimit++;
                   } else if (liters != fuelingData['volume']) {
@@ -242,7 +239,6 @@ class FillingController extends GetxController {
                 print("end filing");
                 break;
               } else if (isNozzleUpAndDown) {
-                print("nozzle was up and down without filling");
                 await blueSkyController
                     .powerOFF()
                     .then((value) => Get.offNamed(AppRoutes.homeScreenRoute));
@@ -253,7 +249,6 @@ class FillingController extends GetxController {
               routerCounter = 0;
             } else if (!isRouterConnected) {
               routerCounter++;
-              print("counter $routerCounter");
             }
             if (routerCounter >= 7) {
               update();
@@ -367,7 +362,7 @@ ${"".padRight(25)}شكرا
       );
       parameters params = {
         'user_id': _authController.currentUser!.id,
-        'card_sn': cardId, // homeController.cardId,
+        'card_sn': cardId,
         'product_id': _authController.currentProduct!.id,
         'print': printStatus,
         'transid': profferSale!.invoiceNumber

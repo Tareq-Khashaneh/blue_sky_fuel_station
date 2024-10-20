@@ -29,7 +29,7 @@ class BottomNavBarContainer extends StatelessWidget {
         width: width ?? double.infinity,
         height: height ?? Get.size.height * 0.1,
         decoration: BoxDecoration(
-            borderRadius: BorderRadius.all(Radius.circular(12)),
+            borderRadius: const BorderRadius.all(Radius.circular(12)),
             color: color ?? AppColors.kMainColorGreen,
             boxShadow: [
               BoxShadow(

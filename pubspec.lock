@@ -485,14 +485,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "6.5.0"
-  xor_dart:
-    dependency: "direct main"
-    description:
-      name: xor_dart
-      sha256: ce3d4f2e22bd1cd04c0c2885615d46955be7cc066570b87978ffe142458cfa35
-      url: "https://pub.dev"
-    source: hosted
-    version: "1.0.2"
 sdks:
   dart: ">=3.5.0 <4.0.0"
   flutter: ">=3.22.0"

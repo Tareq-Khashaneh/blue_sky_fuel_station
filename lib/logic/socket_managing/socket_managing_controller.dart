@@ -2,11 +2,10 @@ import 'dart:typed_data';
 import 'package:get/get.dart';
 import '../getx_service/app_service.dart';
 
-  class SocketManagingController extends GetxController {
-  final AppService  appService = Get.find();
+class SocketManagingController extends GetxController {
+  final AppService appService = Get.find();
 
   Stream<Uint8List> getResponseStream() {
-
     return appService.responseController.stream;
   }
 
@@ -17,5 +16,4 @@ import '../getx_service/app_service.dart';
       print('Error sending request: $e');
     }
   }
-
-  }
+}

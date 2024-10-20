@@ -43,7 +43,6 @@ class LoginAdminScreen extends GetView<AdminAuthController> {
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            // Flexible(child: IconButton(onPressed: () => Get.toNamed(AppRoutes.languageRoute), icon: const Icon(Icons.language_outlined)))
                             Align(
                               alignment: Alignment.center,
                               child: Text("أهلا بك أدمن",

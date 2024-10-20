@@ -32,7 +32,7 @@ class LoginScreen extends GetView<AuthController> {
                   controller.appService.pumpState
                       ? "المضخة مفعلة"
                       : "المضخة غير مفعلة",
-                  style: TextStyle(color: AppColors.kWhiteColor, fontSize: 14),
+                  style: const TextStyle(color: AppColors.kWhiteColor, fontSize: 14),
                 ),
                 IconButton(
                     onPressed: () => Get.toNamed(AppRoutes.loginAdminRoute),
@@ -85,7 +85,7 @@ class LoginScreen extends GetView<AuthController> {
                           builder: (controller) => DropdownButtonFormField(
                               decoration: InputDecoration(
                                 errorStyle:
-                                    TextStyle(color: AppColors.kWhiteColor),
+                                    const TextStyle(color: AppColors.kWhiteColor),
                                 prefixIcon: const Icon(
                                   Icons.local_gas_station_rounded,
                                   color: AppColors.kMainColorGreenLighter,

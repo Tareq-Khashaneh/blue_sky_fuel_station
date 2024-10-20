@@ -1,7 +1,6 @@
 import 'package:blue_sky_station/presentation/widgets/circular_loading.dart';
 import 'package:blue_sky_station/presentation/widgets/error_message_card.dart';
 import 'package:flip_panel_plus/flip_panel_plus.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:lottie/lottie.dart';
@@ -214,7 +213,8 @@ class FillingScreen extends GetView<FillingController> {
                                                       15, 15, 15, 2),
                                               child: Obx(
                                                 () =>
-                                                    controller.appService.isServerConnected
+                                                    controller.appService
+                                                            .isServerConnected
                                                         ? Column(
                                                             mainAxisAlignment:
                                                                 MainAxisAlignment
@@ -380,13 +380,13 @@ class FillingScreen extends GetView<FillingController> {
                                                                           Expanded(
                                                                             child:
                                                                                 ElevatedButton(
-                                                                                  onPressed: () {
-                                                                                    controller.paymentIFFail(orderLiters: double.parse(controller.orderLiters)).then((onValue) async {
-                                                                                      if (onValue) {
-                                                                                        controller.printInvoice(liters: double.parse(controller.orderLiters), sales: (controller.cardQuota!.slices[1].price) * double.parse(controller.orderLiters)).then((onValue) => Get.offNamed(AppRoutes.homeScreenRoute));
-                                                                                      }
-                                                                                    });
-                                                                                  },
+                                                                              onPressed: () {
+                                                                                controller.paymentIFFail(orderLiters: double.parse(controller.orderLiters)).then((onValue) async {
+                                                                                  if (onValue) {
+                                                                                    controller.printInvoice(liters: double.parse(controller.orderLiters), sales: (controller.cardQuota!.slices[1].price) * double.parse(controller.orderLiters)).then((onValue) => Get.offNamed(AppRoutes.homeScreenRoute));
+                                                                                  }
+                                                                                });
+                                                                              },
                                                                               style: ElevatedButton.styleFrom(
                                                                                 backgroundColor: AppColors.kMainColorGreen,
                                                                                 shape: RoundedRectangleBorder(
@@ -396,15 +396,21 @@ class FillingScreen extends GetView<FillingController> {
                                                                                 elevation: 5,
                                                                               ),
                                                                               child: Padding(
-                                                                                padding: const EdgeInsets.symmetric(vertical: 12.0, ),
+                                                                                padding: const EdgeInsets.symmetric(
+                                                                                  vertical: 12.0,
+                                                                                ),
                                                                                 child: Text(
                                                                                   "اعادة المحاولة",
-                                                                                  style: Theme.of(context).textTheme.bodyLarge!.copyWith(fontWeight: FontWeight.bold, fontSize: 16, color: AppColors.kWhiteColor),textAlign: TextAlign.center,
+                                                                                  style: Theme.of(context).textTheme.bodyLarge!.copyWith(fontWeight: FontWeight.bold, fontSize: 16, color: AppColors.kWhiteColor),
+                                                                                  textAlign: TextAlign.center,
                                                                                 ),
                                                                               ),
                                                                             ),
                                                                           ),
-                                                                          const SizedBox(width: 20,),
+                                                                          const SizedBox(
+                                                                            width:
+                                                                                20,
+                                                                          ),
                                                                           Expanded(
                                                                             child:
                                                                                 ElevatedButton(
@@ -418,10 +424,12 @@ class FillingScreen extends GetView<FillingController> {
                                                                                 elevation: 5,
                                                                               ),
                                                                               child: Padding(
-                                                                                padding: const EdgeInsets.symmetric(vertical: 16.0,),
+                                                                                padding: const EdgeInsets.symmetric(
+                                                                                  vertical: 16.0,
+                                                                                ),
                                                                                 child: Text(
                                                                                   "إلغاء",
-                                                                                  style: Theme.of(context).textTheme.bodyLarge!.copyWith( fontSize: 18, color: AppColors.kTextColorBlack26),
+                                                                                  style: Theme.of(context).textTheme.bodyLarge!.copyWith(fontSize: 18, color: AppColors.kTextColorBlack26),
                                                                                 ),
                                                                               ),
                                                                             ),

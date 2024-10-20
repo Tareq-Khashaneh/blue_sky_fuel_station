@@ -8,7 +8,6 @@ import 'logic/socket_managing/socket_managing_bindings.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await AppService().initialize();
-  await Future.delayed(const Duration(seconds: 5));
   runApp(const MyApp());
 }
 
@@ -16,7 +15,6 @@ class MyApp extends StatelessWidget {
   const MyApp({super.key});
   @override
   Widget build(BuildContext context) {
-
     return GetMaterialApp(
         theme: ThemeData(
           fontFamily: "Cairo",
@@ -30,7 +28,6 @@ class MyApp extends StatelessWidget {
             ),),
         locale: const Locale('ar'),
         debugShowCheckedModeBanner: false,
-        // home: ConnectionScreen(),
         initialBinding: SocketManagingBindings(),
         initialRoute: AppRoutes.loginScreenRoute,
         getPages: AppRoutes.pages

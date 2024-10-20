@@ -37,7 +37,7 @@ class AppService extends GetxService {
   StreamSubscription<Uint8List>? subscription;
   StreamSubscription<List<ConnectivityResult>>? subscriptionConnectivityResult;
   Rx<bool> isRouterConnected = false.obs;
-  late String deviceSerialNum;
+  late String deviceSerialNum ;
   late parameters params;
   ApiServiceDio apiService = ApiServiceDio();
   late InitProvider initProvider;
@@ -106,7 +106,6 @@ class AppService extends GetxService {
     } else {
       isServerConnected = false;
     }
-    print("here $dataDetails");
     print("isServerConnect $isServerConnected");
     await setDateAndTime();
   }
@@ -206,6 +205,15 @@ class AppService extends GetxService {
     try {
       await GetStorage.init();
       storage = GetStorage();
+      await getSerialNumber();
+      if(await checkConnectivity()){
+        if (storage.read("ip") != null && storage.read("port") != null) {
+          await initializeDataDetails(
+              ip: storage.read("ip"), port: storage.read("port"));
+        }
+      }else{
+        Alerts.showSnackBar("يرجى تشغيل الشبكة وإعادة ضبط الإعدادات");
+      }
       subscriptionConnectivityResult = Connectivity()
           .onConnectivityChanged
           .listen((List<ConnectivityResult> result) async {
@@ -218,11 +226,7 @@ class AppService extends GetxService {
                 pumpPort: int.parse(storage.read("pumpPort")));
           }
           await listenToSocket();
-          if (storage.read("ip") != null && storage.read("port") != null) {
-            await initializeDataDetails(
-                    ip: storage.read("ip"), port: storage.read("port"))
-                .then((onValue) {});
-          }
+
         } else {
           isRouterConnected.value = false;
           stopSocketListening();
@@ -231,7 +235,6 @@ class AppService extends GetxService {
       if (storage.read("pumpState") != null) {
         pumpState = storage.read("pumpState");
       }
-      await getSerialNumber();
       print("ip server ${storage.read("ip")}");
     } catch (e) {
       print("Error in init ${e.toString()}");
