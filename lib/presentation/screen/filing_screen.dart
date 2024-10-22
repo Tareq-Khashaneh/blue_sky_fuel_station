@@ -196,8 +196,8 @@ class FillingScreen extends GetView<FillingController> {
                                               ),
                                             );
                                           }
-                                        } else {
-                                          const ErrorMessageCard(
+                                        } else  {
+                                         return const ErrorMessageCard(
                                             message: "لايوجد اتصال",
                                           );
                                         }

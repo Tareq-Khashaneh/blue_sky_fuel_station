@@ -38,7 +38,7 @@ class HomeController extends GetxController {
     cardReadStatus = EnumStatus.initialize;
     _cardQuotPro = CardQuotPro(
         cardQuotaRepo: CardQuotaRepo(apiService: appService.apiService));
-    if(appService.pumpState){
+    if (appService.pumpState) {
       startPumpConnectionCheck();
     }
     super.onInit();
@@ -51,33 +51,39 @@ class HomeController extends GetxController {
   }
 
   void startPumpConnectionCheck() {
-    _pumpTimer = Timer.periodic(const Duration(milliseconds: 1000), (timer) async {
+    _pumpTimer =
+        Timer.periodic(const Duration(milliseconds: 1000), (timer) async {
       await checkConnectionToPump();
     });
   }
 
   Future<void> checkConnectionToPump() async {
-      status = await blueSkyController.readDispenserStatus();
-      print("Status in home controller $status");
-      if (status.isEmpty) {
-        counterStatusIsEmpty++;
-        print("status isEmpty home controller");
-      } else {
-        counterStatusIsEmpty = 0;
-        if (status['control'] == 0) {
-          await blueSkyController.askForControl();
-        } else if (status['control'] == 1) {
-          print("pump is Control");
-        }
-        if (status['nozzle'] == 1) {
-          isNozzleLift = true;
-        } else if (status['nozzle'] == 0) {
-          isNozzleLift = false;
-        }
-      }if(counterStatusIsEmpty >= 4){
-        isPumpOff = true;
-      }
+    status = await blueSkyController.readDispenserStatus();
+    print("Status in home controller $status");
+    if (status.isEmpty) {
+      counterStatusIsEmpty++;
+      print("status isEmpty home controller");
+    } else {
+      counterStatusIsEmpty = 0;
+      isPumpOff = false;
       update();
+      if (status['control'] == 0) {
+        await blueSkyController.askForControl();
+      } else if (status['control'] == 1) {
+        print("pump is Control");
+      }
+      if (status['nozzle'] == 1) {
+        isNozzleLift = true;
+      } else if (status['nozzle'] == 0) {
+        isNozzleLift = false;
+      }
+
+    }
+    if (counterStatusIsEmpty >= 5) {
+      isPumpOff = true;
+      update();
+    }
+
   }
 
   Future<bool> readCard() async {
@@ -121,9 +127,8 @@ class HomeController extends GetxController {
     });
   }
 
-
   Future<bool> getCardQuota() async {
-    isServerLoading = true ;
+    isServerLoading = true;
     update();
     parameters params = {
       'user_id': _authController.currentUser!.id,
@@ -138,7 +143,6 @@ class HomeController extends GetxController {
     }
     isServerLoading = false;
     update();
-   return cardQuota != null ? true : false;
-
+    return cardQuota != null ? true : false;
   }
 }
