@@ -14,5 +14,5 @@ This Flutter-based POS application is designed to streamline fuel pump managemen
 7. Flexible API integration: Allows for easy integration with back-end systems and databases for transaction records and analytics.
 
 ## images link
-https://t.me/tareq97/24
+https://t.me/tareq_khashaneh_portfolio
 
