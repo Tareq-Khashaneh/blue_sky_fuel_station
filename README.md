@@ -1,4 +1,4 @@
-# blue_sky_station
+# blue_sky_station For Pos Device
 
 This Flutter-based POS application is designed to streamline fuel pump management at stations using the Nexgo N86 device. It integrates real-time pump control, card reading, and transaction handling, making operations efficient for both operators and customers. The app features a clean UI with GetX state management and uses TCP socket communication to interact with the pumps and POS devices.
 
